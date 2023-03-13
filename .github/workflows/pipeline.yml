@@ -13,38 +13,38 @@ jobs:
         with:
           node-version: 16.*
       - name: Build Docker image
-        run: docker build . --file Dockerfile.focal -t plimage:latest
+        run: |
+          docker build . --file Dockerfile.focal -t plimage:latest
       - name: Run Docker container
-        run: docker run -d --name plcontainer plimage:latest
+        run: |
+          docker run -d --name plcontainer plimage:latest
       - name: Copy Allure results
         run: sudo docker cp plcontainer:./tests/allure-results allure-results
-      - name: Upload Allure results artifact
-        uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v2
         with:
           name: allure-results
           path: allure-results
-      - name: Setup gh-pages branch
+      - name: Checkout gh-pages branch
         if: always()
         uses: actions/checkout@v2
         with:
           ref: gh-pages
           path: gh-pages
-          persist-credentials: false
+          continue-on-error: true
       - name: Create Allure report
         if: always()
         id: allure-report
-        uses: simple-elf/allure-report-action@v3
+        uses: simple-elf/allure-report-action@master
         with:
-          allure_results: allure-results
-          gh_pages: gh-pages
-          allure_report: allure-report
-          allure_history: allure-history
-      - name: Publish to GitHub pages
+          allure-results: allure-results
+          gh-pages: gh-pages
+          allure-report: allure-report
+          allure-history: allure-history
+      - name: Publish to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3
         env:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          publish_dir: gh-pages
+          publish_dir: ./gh-pages
           publish_branch: gh-pages
-  
