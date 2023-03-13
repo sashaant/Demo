@@ -4,53 +4,47 @@ on:
   push:
     branches: [master]
 
-permissions: read-all|write-all
-
 jobs:
   npm-test:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
-        with:
-          ref: 'refs/heads/master'
-
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: |
-            /var/lib/docker
-          key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile*') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
-            
       - uses: actions/setup-node@v2
         with:
           node-version: 16.*
-
-      - run: docker build . --file Dockerfile.focal -t plimage
-
-      - run: docker run -d --name plcontainer plimage
-
-      - run: docker cp plcontainer:./tests/allure-results allure-results
-
-      - uses: actions/upload-artifact@master
+      - name: Build Docker image
+        run: docker build . --file Dockerfile.focal -t plimage:latest
+      - name: Run Docker container
+        run: docker run -d --name plcontainer plimage:latest
+      - name: Copy Allure results
+        run: sudo docker cp plcontainer:./tests/allure-results allure-results
+      - name: Upload Allure results artifact
+        uses: actions/upload-artifact@v2
         with:
           name: allure-results
           path: allure-results
-
-      - uses: simple-elf/allure-report-action@master
+      - name: Setup gh-pages branch
+        if: always()
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: gh-pages
+          persist-credentials: false
+      - name: Create Allure report
+        if: always()
         id: allure-report
+        uses: simple-elf/allure-report-action@v3
         with:
           allure_results: allure-results
           gh_pages: gh-pages
           allure_report: allure-report
           allure_history: allure-history
-
-      - name: Publish Allure report to GitHub Pages
+      - name: Publish to GitHub pages
         if: always()
-        uses: peaceiris/actions-gh-pages@v2
+        uses: peaceiris/actions-gh-pages@v3
+        env:
+          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          personal_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: gh-pages
           publish_branch: gh-pages
-          publish_dir: allure-history
+  
