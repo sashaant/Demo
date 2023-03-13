@@ -1,0 +1,7 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Mon Mar 13 21:06:09 GMT 2023","Mon Mar 13 21:06:09 GMT 2023","546","firefox","example.spec.js","","","","Check out",""
+"passed","Mon Mar 13 21:06:13 GMT 2023","Mon Mar 13 21:06:15 GMT 2023","1997","webkit","example.spec.js","","","","Check out",""
+"passed","Mon Mar 13 21:06:10 GMT 2023","Mon Mar 13 21:06:13 GMT 2023","3089","webkit","example.spec.js","","","","Select the Product ",""
+"passed","Mon Mar 13 21:06:05 GMT 2023","Mon Mar 13 21:06:06 GMT 2023","992","chromium","example.spec.js","","","","Check out",""
+"passed","Mon Mar 13 21:06:06 GMT 2023","Mon Mar 13 21:06:09 GMT 2023","2620","firefox","example.spec.js","","","","Select the Product ",""
+"passed","Mon Mar 13 21:06:03 GMT 2023","Mon Mar 13 21:06:05 GMT 2023","1171","chromium","example.spec.js","","","","Select the Product ",""
